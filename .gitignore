@@ -1,0 +1,14 @@
+*.pyc
+.vscode
+.idea
+.venv/
+__pycache__/
+icons_db/
+server/media/
+server/static/
+node_modules/
+build/
+todo.txt
+.python-version
+.envrc
+requirements.txt

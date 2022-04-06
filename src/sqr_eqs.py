@@ -1,12 +1,19 @@
+import enum
 import math
 
 
-def almost_equal(
+class CompareResult(enum.Enum):
+    lower = -1
+    equal = 0
+    greater = 1
+
+
+def compare(
     x: float,
     y: float,
-    precision: float = 1e-100,
-) -> bool:
-    """Сравнит что числа `x` и `y` различаются не больше чем на `precision`.
+    precision: float = 1e-7,
+) -> CompareResult:
+    """Сравнит что числа `x` и `y` c точностью `precision`.
 
     Args:
         x: первое сравнимое
@@ -16,14 +23,18 @@ def almost_equal(
     Returns:
         `True`, если `x` почти равен `y`, иначе `False`.
     """
-    return abs(x - y) < precision
+    if abs(x - y) < precision:
+        return CompareResult.equal
+    if x < y:
+        return CompareResult.lower
+    return CompareResult.greater
 
 
 def solve(
     a: float,
     b: float,
     c: float,
-    precision: float = 1e-100,
+    precision: float = 1e-7,
 ) -> list[float]:
     """Решает квадратные уравнения.
 
@@ -46,13 +57,13 @@ def solve(
     ]):
         raise ValueError("Got NaN in args")
 
-    if almost_equal(a, 0, precision):
+    if compare(a, 0, precision) == CompareResult.equal:
         raise ValueError("Argument 'a' shouldn't be a zero.")
 
     discriminant = b**2 - (4 * a * c)
-    if discriminant < 0:
+    if compare(discriminant, 0, precision) == CompareResult.lower:
         return {}
-    if almost_equal(discriminant, 0, precision):
+    if compare(discriminant, 0, precision) == CompareResult.equal:
         return [-b / (2 * a)]
     return [
         (-b + math.sqrt(discriminant)) / (2 * a),

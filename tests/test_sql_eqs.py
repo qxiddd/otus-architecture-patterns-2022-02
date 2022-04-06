@@ -3,7 +3,8 @@ import math
 import pytest
 
 from sqr_eqs import (
-    almost_equal,
+    CompareResult,
+    compare,
     solve
 )
 
@@ -24,8 +25,8 @@ def test_one_root():
 
     В тесте подбираются корни близкие по значению, чтобы функция solve решила, что у уравнения есть только 1 корень.
     """
-    precision = 1e-100
-    delta = 1e-101
+    precision = 1e-6
+    delta = 1e-7
     root_1 = 2
     root_2 = 2 + delta
 
@@ -39,14 +40,14 @@ def test_one_root():
     # Убеждаемся, что только один корень
     [actual_root] = solve(1, b, c, precision)
 
-    assert almost_equal(actual_root, root_1, precision)
-    assert almost_equal(actual_root, root_2, precision)
+    assert compare(actual_root, root_1, precision) == CompareResult.equal
+    assert compare(actual_root, root_2, precision) == CompareResult.equal
 
 
 def test_non_zero_square():
     """Проверить поведение, когда коэфиент `a` равен нулю."""
     with pytest.raises(ValueError, match="Argument 'a' shouldn't be a zero."):
-        solve(1e-101, 0, 0, precision=1e-100)
+        solve(1e-101, 0, 0, precision=1e-7)
 
 
 @pytest.mark.parametrize(
